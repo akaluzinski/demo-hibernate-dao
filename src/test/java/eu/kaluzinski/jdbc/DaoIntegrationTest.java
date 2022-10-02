@@ -2,7 +2,10 @@ package eu.kaluzinski.jdbc;
 
 import eu.kaluzinski.jdbc.dao.AuthorDao;
 import eu.kaluzinski.jdbc.dao.AuthorDaoImpl;
+import eu.kaluzinski.jdbc.dao.BookDao;
+import eu.kaluzinski.jdbc.dao.BookDaoImpl;
 import eu.kaluzinski.jdbc.domain.Author;
+import eu.kaluzinski.jdbc.domain.Book;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -16,15 +19,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("local")
 @DataJpaTest
-@Import(AuthorDaoImpl.class)
+@Import({AuthorDaoImpl.class, BookDaoImpl.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class DaoIntegrationTest {
     @Autowired
     AuthorDao authorDao;
 
-//    @Autowired
-//    BookDao bookDao;
-//
+    @Autowired
+    BookDao bookDao;
+
 //    @Test
 //    void testDeleteBook() {
 //        Book book = new Book();
@@ -76,20 +79,20 @@ public class DaoIntegrationTest {
 //
 //        assertThat(saved).isNotNull();
 //    }
-//
-//    @Test
-//    void testGetBookByName() {
-//        Book book = bookDao.findBookByTitle("Clean Code");
-//
-//        assertThat(book).isNotNull();
-//    }
-//
-//    @Test
-//    void testGetBook() {
-//        Book book = bookDao.getById(3L);
-//
-//        assertThat(book.getId()).isNotNull();
-//    }
+
+    @Test
+    void testGetBookByName() {
+        Book book = bookDao.findBookByTitle("Clean Code");
+
+        assertThat(book).isNotNull();
+    }
+
+    @Test
+    void testGetBook() {
+        Book book = bookDao.getById(3L);
+
+        assertThat(book.getId()).isNotNull();
+    }
 
     @Test
     void testDeleteAuthor() {
