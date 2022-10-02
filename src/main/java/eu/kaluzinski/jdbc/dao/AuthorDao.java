@@ -2,7 +2,6 @@ package eu.kaluzinski.jdbc.dao;
 
 import eu.kaluzinski.jdbc.domain.Author;
 
-
 public interface AuthorDao {
     Author getById(Long id);
 
