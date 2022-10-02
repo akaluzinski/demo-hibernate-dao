@@ -94,11 +94,12 @@ public class DaoIntegrationTest {
     @Test
     void testDeleteAuthor() {
         Author author = new Author();
-        author.setFirstName("john");
-        author.setLastName("t");
+        author.setFirstName("johhny");
+        author.setLastName("testy");
 
-        Author saved = authorDao.saveNewAuthor(author);
-
+        authorDao.saveNewAuthor(author);
+        Author saved = authorDao.findAuthorByName(author.getFirstName(), author.getLastName());
+        assertThat(saved.getId()).isNotNull();
         authorDao.deleteAuthorById(saved.getId());
 
         assertThrows(EmptyResultDataAccessException.class, () -> {
