@@ -3,8 +3,11 @@ package eu.kaluzinski.jdbc.dao;
 import eu.kaluzinski.jdbc.domain.Author;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class AuthorDaoImpl implements AuthorDao {
@@ -13,6 +16,20 @@ public class AuthorDaoImpl implements AuthorDao {
 
     public AuthorDaoImpl(EntityManagerFactory emf) {
         this.emf = emf;
+    }
+
+    @Override
+    public List<Author> getAuthorsByLastNameLike(String lastName) {
+        EntityManager em = getEntityManager();
+        try {
+            Query query = em.createQuery("SELECT a FROM Author a where a.lastName LIKE :lastName");
+            query.setParameter("lastName", lastName + "%");
+
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+
     }
 
     @Override
