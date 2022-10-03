@@ -52,7 +52,7 @@ public class AuthorDaoImpl implements AuthorDao {
     public void deleteAuthorById(Long id) {
         EntityManager em = getEntityManager();
         em.getTransaction().begin();
-        Author author = getById(id);
+        Author author = em.find(Author.class, id);
         em.remove(author);
         em.getTransaction().commit();
     }

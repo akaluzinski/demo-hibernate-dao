@@ -3,6 +3,7 @@ package eu.kaluzinski.jdbc.dao;
 import eu.kaluzinski.jdbc.domain.Author;
 import eu.kaluzinski.jdbc.domain.Book;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.stereotype.Component;
@@ -31,12 +32,34 @@ public class BookDaoImpl implements BookDao {
 
         TypedQuery<Book> query = em.createQuery("SELECT b FROM Book b WHERE b.title = :book_title", Book.class);
         query.setParameter("book_title", title);
-        return query.getSingleResult();
+        Book book = query.getSingleResult();
+        em.close();
+        return book;
     }
 
     @Override
     public Book saveNewBook(Book book) {
-        return null;
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        em.persist(book);
+        em.flush();
+        et.commit();
+        em.close();
+        return book;
+    }
+
+    public Book updateBook(Book book) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        em.merge(book);
+        em.flush();
+        em.clear();
+        Book updatedBook = em.find(Book.class, book.getId());
+        et.commit();
+        em.close();
+        return updatedBook;
     }
 
     @Override
@@ -46,6 +69,11 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public void deleteBookById(Long id) {
-
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        Book book = em.find(Book.class, id);
+        em.remove(book);
+        et.commit();
     }
 }

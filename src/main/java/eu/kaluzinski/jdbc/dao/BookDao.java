@@ -10,6 +10,8 @@ public interface BookDao {
 
     Book saveNewBook(Book book);
 
+    Book updateBook(Book book);
+
     Book setAuthor(Author author);
 
     void deleteBookById(Long id);
