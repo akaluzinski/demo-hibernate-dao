@@ -3,6 +3,7 @@ package eu.kaluzinski.jdbc.dao;
 import eu.kaluzinski.jdbc.domain.Author;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Component;
@@ -49,9 +50,16 @@ public class AuthorDaoImpl implements AuthorDao {
     @Override
     public Author saveNewAuthor(Author author) {
         EntityManager em = getEntityManager();
-        em.joinTransaction();
-        em.persist(author);
-        em.flush();
+        try {
+            EntityTransaction et = em.getTransaction();
+            et.begin();
+            em.persist(author);
+            em.flush();
+            et.commit();
+        } finally {
+            em.close();
+        }
+
         return author;
     }
 

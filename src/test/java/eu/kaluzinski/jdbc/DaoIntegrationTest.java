@@ -6,12 +6,12 @@ import eu.kaluzinski.jdbc.dao.BookDao;
 import eu.kaluzinski.jdbc.dao.BookDaoImpl;
 import eu.kaluzinski.jdbc.domain.Author;
 import eu.kaluzinski.jdbc.domain.Book;
+import jakarta.persistence.NoResultException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -107,9 +107,8 @@ public class DaoIntegrationTest {
         assertThat(saved.getId()).isNotNull();
         authorDao.deleteAuthorById(saved.getId());
 
-        assertThrows(EmptyResultDataAccessException.class, () -> {
-            Author deleted = authorDao.getById(saved.getId());
-        });
+        assertThrows(NoResultException.class, () ->
+                authorDao.findAuthorByName(author.getFirstName(), author.getLastName()));
 
     }
 
