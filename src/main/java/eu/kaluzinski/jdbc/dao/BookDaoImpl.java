@@ -3,6 +3,7 @@ package eu.kaluzinski.jdbc.dao;
 import eu.kaluzinski.jdbc.domain.Author;
 import eu.kaluzinski.jdbc.domain.Book;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.stereotype.Component;
 
@@ -19,14 +20,18 @@ public class BookDaoImpl implements BookDao {
     @Override
     public Book getById(Long id) {
         EntityManager em = emf.createEntityManager();
-        Book book = em.find(Book.class, id);;
+        Book book = em.find(Book.class, id);
         em.close();
         return book;
     }
 
     @Override
     public Book findBookByTitle(String title) {
-        return null;
+        EntityManager em = emf.createEntityManager();
+
+        TypedQuery<Book> query = em.createQuery("SELECT b FROM Book b WHERE b.title = :book_title", Book.class);
+        query.setParameter("book_title", title);
+        return query.getSingleResult();
     }
 
     @Override
