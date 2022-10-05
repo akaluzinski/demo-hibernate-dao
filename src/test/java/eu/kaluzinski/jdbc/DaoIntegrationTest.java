@@ -90,6 +90,14 @@ public class DaoIntegrationTest {
     }
 
     @Test
+    void testGetBookByISBN() {
+        Book book = bookDao.findByISBN("978-1617292545");
+
+        assertThat(book).isNotNull();
+        assertThat(book.getTitle()).isEqualTo("Spring Boot in Action, 1st Edition");
+    }
+
+    @Test
     void testGetBook() {
         Book book = bookDao.getById(3L);
 
