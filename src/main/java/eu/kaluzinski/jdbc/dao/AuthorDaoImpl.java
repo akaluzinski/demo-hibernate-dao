@@ -4,7 +4,6 @@ import eu.kaluzinski.jdbc.domain.Author;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +22,7 @@ public class AuthorDaoImpl implements AuthorDao {
     public List<Author> getAuthorsByLastNameLike(String lastName) {
         EntityManager em = getEntityManager();
         try {
-            Query query = em.createQuery("SELECT a FROM Author a where a.lastName LIKE :lastName");
+            TypedQuery<Author> query = em.createQuery("SELECT a FROM Author a where a.lastName LIKE :lastName", Author.class);
             query.setParameter("lastName", lastName + "%");
 
             return query.getResultList();
@@ -51,8 +50,7 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author findAuthorByName(String firstName, String lastName) {
-        TypedQuery<Author> query = getEntityManager().createQuery(
-                "SELECT a FROM Author a WHERE a.firstName = :first_name AND a.lastName = :last_name", Author.class);
+        TypedQuery<Author> query = getEntityManager().createNamedQuery("author_find_by_name", Author.class);
         query.setParameter("first_name", firstName);
         query.setParameter("last_name", lastName);
         return query.getSingleResult();

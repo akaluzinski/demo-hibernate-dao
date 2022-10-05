@@ -98,6 +98,13 @@ public class DaoIntegrationTest {
     }
 
     @Test
+    void testFindAllBooks() {
+        List<Book> books = bookDao.findAll();
+        assertThat(books).isNotNull();
+        assertThat(books.size()).isPositive();
+    }
+
+    @Test
     void testGetBook() {
         Book book = bookDao.getById(3L);
 
