@@ -5,7 +5,6 @@ import eu.kaluzinski.jdbc.domain.Book;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Component;
 
@@ -31,10 +30,10 @@ public class BookDaoImpl implements BookDao {
     public Book findByISBN(String isbn) {
         EntityManager em = emf.createEntityManager();
         try {
-            Query query = em.createQuery("SELECT b FROM Book b where b.isbn = :isbn");
+            TypedQuery<Book> query = em.createQuery("SELECT b FROM Book b where b.isbn = :isbn", Book.class);
             query.setParameter("isbn", isbn);
 
-            return (Book) query.getSingleResult();
+            return query.getSingleResult();
         } finally {
             em.close();
         }
