@@ -4,6 +4,7 @@ import eu.kaluzinski.jdbc.domain.Author;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Component;
 
@@ -54,6 +55,19 @@ public class AuthorDaoImpl implements AuthorDao {
         query.setParameter("first_name", firstName);
         query.setParameter("last_name", lastName);
         return query.getSingleResult();
+    }
+
+    @Override
+    public Author findAuthorByNameNative(String firstName, String lastName) {
+        EntityManager em = getEntityManager();
+        try {
+            Query query = em.createNativeQuery("SELECT * FROM author a WHERE a.first_name = ? and a.last_name = ?", Author.class);
+            query.setParameter(1, firstName);
+            query.setParameter(2, lastName);
+            return (Author) query.getSingleResult();
+        } finally {
+            em.close();
+        }
     }
 
     @Override
