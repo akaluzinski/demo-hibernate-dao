@@ -3,10 +3,7 @@ package eu.kaluzinski.jdbc.dao;
 import eu.kaluzinski.jdbc.domain.Author;
 import eu.kaluzinski.jdbc.domain.Book;
 import eu.kaluzinski.jdbc.repositories.BookRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +12,10 @@ import java.util.List;
 @Component
 public class BookDaoImpl implements BookDao {
 
-
-    private final EntityManagerFactory emf;
+    
     private final BookRepository bookRepository;
 
-    public BookDaoImpl(EntityManagerFactory emf, BookRepository bookRepository) {
-        this.emf = emf;
+    public BookDaoImpl(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
@@ -37,27 +32,14 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public Book findByISBN(String isbn) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            TypedQuery<Book> query = em.createQuery("SELECT b FROM Book b where b.isbn = :isbn", Book.class);
-            query.setParameter("isbn", isbn);
-
-            return query.getSingleResult();
-        } finally {
-            em.close();
-        }
+        return bookRepository.findBooksByIsbn(isbn)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
     public Book findBookByTitle(String title) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            TypedQuery<Book> query = em.createNamedQuery("find_by_title", Book.class);
-            query.setParameter("book_title", title);
-            return query.getSingleResult();
-        } finally {
-            em.close();
-        }
+        return bookRepository.findBookByTitle(title)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
