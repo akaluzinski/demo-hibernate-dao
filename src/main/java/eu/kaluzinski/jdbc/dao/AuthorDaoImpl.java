@@ -6,7 +6,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
@@ -25,16 +24,7 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public List<Author> getAuthorsByLastNameLike(String lastName) {
-        EntityManager em = getEntityManager();
-        try {
-            TypedQuery<Author> query = em.createQuery("SELECT a FROM Author a where a.lastName LIKE :lastName", Author.class);
-            query.setParameter("lastName", lastName + "%");
-
-            return query.getResultList();
-        } finally {
-            em.close();
-        }
-
+        return authorRepository.findAllAuthorsByLastNameLikeQuery(lastName);
     }
 
     @Override
@@ -44,13 +34,7 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public List<Author> findAll() {
-        EntityManager em = getEntityManager();
-        try {
-            TypedQuery<Author> typedQuery = em.createNamedQuery("author_find_all", Author.class);
-            return typedQuery.getResultList();
-        } finally {
-            em.close();
-        }
+        return authorRepository.findAll();
     }
 
     @Override

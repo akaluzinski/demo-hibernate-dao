@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class BookDaoImpl implements BookDao {
 
-    
+
     private final BookRepository bookRepository;
 
     public BookDaoImpl(BookRepository bookRepository) {
