@@ -40,9 +40,9 @@ public class DaoIntegrationTest {
 
         bookDao.deleteBookById(saved.getId());
 
-        Book deleted = bookDao.getById(saved.getId());
-
-        assertThat(deleted).isNull();
+        assertThrows(EntityNotFoundException.class, () -> {
+            Book deleted = bookDao.getById(saved.getId());
+        });
     }
 
     @Test

@@ -2,10 +2,12 @@ package eu.kaluzinski.jdbc.dao;
 
 import eu.kaluzinski.jdbc.domain.Author;
 import eu.kaluzinski.jdbc.domain.Book;
+import eu.kaluzinski.jdbc.repositories.BookRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,27 +17,22 @@ public class BookDaoImpl implements BookDao {
 
 
     private final EntityManagerFactory emf;
+    private final BookRepository bookRepository;
 
-    public BookDaoImpl(EntityManagerFactory emf) {
+    public BookDaoImpl(EntityManagerFactory emf, BookRepository bookRepository) {
         this.emf = emf;
+        this.bookRepository = bookRepository;
     }
 
     @Override
     public List<Book> findAll() {
-        EntityManager em = emf.createEntityManager();
-        try {
-            return em.createNamedQuery("find_all", Book.class).getResultList();
-        } finally {
-            em.close();
-        }
+        return bookRepository.findAll();
     }
 
     @Override
     public Book getById(Long id) {
-        EntityManager em = emf.createEntityManager();
-        Book book = em.find(Book.class, id);
-        em.close();
-        return book;
+        return bookRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
@@ -65,27 +62,18 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public Book saveNewBook(Book book) {
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        et.begin();
-        em.persist(book);
-        em.flush();
-        et.commit();
-        em.close();
-        return book;
+        return bookRepository.save(book);
     }
 
+    @Override
+    @Transactional
     public Book updateBook(Book book) {
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        et.begin();
-        em.merge(book);
-        em.flush();
-        em.clear();
-        Book updatedBook = em.find(Book.class, book.getId());
-        et.commit();
-        em.close();
-        return updatedBook;
+        Book foundBook = bookRepository.getReferenceById(book.getId());
+        foundBook.setAuthorId(book.getAuthorId());
+        foundBook.setTitle(book.getTitle());
+        foundBook.setPublisher(book.getPublisher());
+        foundBook.setAuthorId(book.getAuthorId());
+        return bookRepository.save(foundBook);
     }
 
     @Override
@@ -95,11 +83,6 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public void deleteBookById(Long id) {
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        et.begin();
-        Book book = em.find(Book.class, id);
-        em.remove(book);
-        et.commit();
+        bookRepository.deleteById(id);
     }
 }
