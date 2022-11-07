@@ -1,11 +1,12 @@
 package eu.kaluzinski.jdbc.dao;
 
 import eu.kaluzinski.jdbc.domain.Author;
+import eu.kaluzinski.jdbc.repositories.AuthorRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,9 +15,11 @@ import java.util.List;
 public class AuthorDaoImpl implements AuthorDao {
 
     private final EntityManagerFactory emf;
+    private final AuthorRepository authorRepository;
 
-    public AuthorDaoImpl(EntityManagerFactory emf) {
+    public AuthorDaoImpl(EntityManagerFactory emf, AuthorRepository authorRepository) {
         this.emf = emf;
+        this.authorRepository = authorRepository;
     }
 
     @Override
@@ -35,7 +38,7 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author getById(Long id) {
-        return getEntityManager().find(Author.class, id);
+        return authorRepository.getReferenceById(id);
     }
 
     @Override
@@ -72,37 +75,21 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author saveNewAuthor(Author author) {
-        EntityManager em = getEntityManager();
-        try {
-            EntityTransaction et = em.getTransaction();
-            et.begin();
-            em.persist(author);
-            em.flush();
-            et.commit();
-        } finally {
-            em.close();
-        }
-
-        return author;
+        return authorRepository.save(author);
     }
 
+    @Transactional
     @Override
     public Author updateAuthor(Author author) {
-        EntityManager em = getEntityManager();
-        em.joinTransaction();
-        em.merge(author);
-        em.flush();
-        em.clear();
-        return author;
+        Author foundAuthor = getById(author.getId());
+        foundAuthor.setFirstName(author.getFirstName());
+        foundAuthor.setLastName(author.getLastName());
+        return authorRepository.save(foundAuthor);
     }
 
     @Override
     public void deleteAuthorById(Long id) {
-        EntityManager em = getEntityManager();
-        em.getTransaction().begin();
-        Author author = em.find(Author.class, id);
-        em.remove(author);
-        em.getTransaction().commit();
+        authorRepository.deleteById(id);
     }
 
     private EntityManager getEntityManager() {
