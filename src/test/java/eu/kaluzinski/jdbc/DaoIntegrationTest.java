@@ -6,6 +6,7 @@ import eu.kaluzinski.jdbc.dao.BookDao;
 import eu.kaluzinski.jdbc.dao.BookDaoImpl;
 import eu.kaluzinski.jdbc.domain.Author;
 import eu.kaluzinski.jdbc.domain.Book;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -113,18 +114,17 @@ public class DaoIntegrationTest {
     @Test
     void testDeleteAuthor() {
         Author author = new Author();
-        author.setFirstName("johhny1");
-        author.setLastName("testy1");
+        author.setFirstName("xd");
+        author.setLastName("xd1");
 
         authorDao.saveNewAuthor(author);
-        Author saved = authorDao.findAuthorByFirstNameAndLastName(author.getFirstName(), author.getLastName());
+        Author saved = authorDao.findAuthorByName(author.getFirstName(), author.getLastName());
         assertThat(saved.getId()).isNotNull();
         authorDao.deleteAuthorById(saved.getId());
 
-        assertThrows(RuntimeException.class, () -> {
-            Author deleted = authorDao.findAuthorByFirstNameAndLastName(author.getFirstName(), author.getLastName());
+        assertThrows(EntityNotFoundException.class, () -> {
+            Author deleted = authorDao.findAuthorByName(author.getFirstName(), author.getLastName());
         });
-
     }
 
     @Test
@@ -161,9 +161,16 @@ public class DaoIntegrationTest {
 
     @Test
     void testGetAuthorByName() {
-        Author author = authorDao.findAuthorByFirstNameAndLastName("Craig", "Walls");
+        Author author = authorDao.findAuthorByName("Craig", "Walls");
 
         assertThat(author).isNotNull();
+    }
+
+    @Test
+    void testGetAuthorByNameNotFoundThrowsException() {
+        assertThrows(EntityNotFoundException.class, () -> {
+            authorDao.findAuthorByName("Uniqye", "Unique");
+        });
     }
 
     @Test
