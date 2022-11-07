@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public interface AuthorRepository extends JpaRepository<Author, Long> {
 
+    @Query(value = "SELECT * FROM author WHERE first_name = :firstName and last_name = :lastName", nativeQuery = true)
+    Author findAuthorByNameNative(@Param("firstName") String firstName, @Param("lastName") String lastName);
 
     @Query("SELECT a FROM Author a where a.lastName LIKE :lastName%")
     List<Author> findAllAuthorsByLastNameLikeQuery(@Param("lastName") String lastName);

@@ -2,10 +2,7 @@ package eu.kaluzinski.jdbc.dao;
 
 import eu.kaluzinski.jdbc.domain.Author;
 import eu.kaluzinski.jdbc.repositories.AuthorRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +11,9 @@ import java.util.List;
 @Component
 public class AuthorDaoImpl implements AuthorDao {
 
-    private final EntityManagerFactory emf;
     private final AuthorRepository authorRepository;
 
-    public AuthorDaoImpl(EntityManagerFactory emf, AuthorRepository authorRepository) {
-        this.emf = emf;
+    public AuthorDaoImpl(AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
     }
 
@@ -45,15 +40,7 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author findAuthorByNameNative(String firstName, String lastName) {
-        EntityManager em = getEntityManager();
-        try {
-            Query query = em.createNativeQuery("SELECT * FROM author a WHERE a.first_name = ? and a.last_name = ?", Author.class);
-            query.setParameter(1, firstName);
-            query.setParameter(2, lastName);
-            return (Author) query.getSingleResult();
-        } finally {
-            em.close();
-        }
+        return authorRepository.findAuthorByNameNative(firstName, lastName);
     }
 
     @Override
@@ -75,7 +62,4 @@ public class AuthorDaoImpl implements AuthorDao {
         authorRepository.deleteById(id);
     }
 
-    private EntityManager getEntityManager() {
-        return emf.createEntityManager();
-    }
 }
