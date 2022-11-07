@@ -6,7 +6,6 @@ import eu.kaluzinski.jdbc.dao.BookDao;
 import eu.kaluzinski.jdbc.dao.BookDaoImpl;
 import eu.kaluzinski.jdbc.domain.Author;
 import eu.kaluzinski.jdbc.domain.Book;
-import jakarta.persistence.NoResultException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -114,16 +113,17 @@ public class DaoIntegrationTest {
     @Test
     void testDeleteAuthor() {
         Author author = new Author();
-        author.setFirstName("johhny");
-        author.setLastName("testy");
+        author.setFirstName("johhny1");
+        author.setLastName("testy1");
 
         authorDao.saveNewAuthor(author);
-        Author saved = authorDao.findAuthorByName(author.getFirstName(), author.getLastName());
+        Author saved = authorDao.findAuthorByFirstNameAndLastName(author.getFirstName(), author.getLastName());
         assertThat(saved.getId()).isNotNull();
         authorDao.deleteAuthorById(saved.getId());
 
-        assertThrows(NoResultException.class, () ->
-                authorDao.findAuthorByName(author.getFirstName(), author.getLastName()));
+        assertThrows(RuntimeException.class, () -> {
+            Author deleted = authorDao.findAuthorByFirstNameAndLastName(author.getFirstName(), author.getLastName());
+        });
 
     }
 
@@ -161,7 +161,7 @@ public class DaoIntegrationTest {
 
     @Test
     void testGetAuthorByName() {
-        Author author = authorDao.findAuthorByName("Craig", "Walls");
+        Author author = authorDao.findAuthorByFirstNameAndLastName("Craig", "Walls");
 
         assertThat(author).isNotNull();
     }
