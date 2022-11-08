@@ -5,6 +5,7 @@ import eu.kaluzinski.jdbc.domain.Book;
 import eu.kaluzinski.jdbc.repositories.BookRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,6 +23,16 @@ public class BookDaoImpl implements BookDao {
     @Override
     public List<Book> findAll() {
         return bookRepository.findAll();
+    }
+
+    @Override
+    public List<Book> findAll(Pageable pageable) {
+        return bookRepository.findAll();
+    }
+
+    @Override
+    public List<Book> findAllSortByTitle(Pageable pageable) {
+        return null;
     }
 
     @Override
