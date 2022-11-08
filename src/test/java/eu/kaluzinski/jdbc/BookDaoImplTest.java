@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -26,15 +25,6 @@ class BookDaoImplTest {
 
     @Autowired
     BookDao bookDao;
-
-    @Test
-    void shouldFindAllBooksSortedByTitle() {
-        List<Book> books = bookDao.findAllSortByTitle(PageRequest.of(0, 10,
-                Sort.by(Sort.Order.desc("title"))));
-
-        assertThat(books).isNotNull();
-        assertThat(books.size()).isEqualTo(10);
-    }
 
     @Test
     void shouldFindFirstPageableBooksPage() {
