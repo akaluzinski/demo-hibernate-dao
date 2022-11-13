@@ -17,6 +17,11 @@ create table author
     last_name  varchar(255)
 ) engine = InnoDB;
 
+create table order_header (
+      id bigint not null auto_increment primary key,
+      customer varchar(255)
+) engine=InnoDB;
+
 alter table book
     add constraint book_author_fk foreign key (author_id) references author (id);
 
