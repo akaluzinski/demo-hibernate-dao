@@ -5,10 +5,10 @@ import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Objects;
 
 @Setter
 @Getter
@@ -30,6 +30,8 @@ public class OrderHeader extends BaseEntity {
     @Embedded
     private Address billToAddress;
     private String customer;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     @Override
     public boolean equals(Object o) {
@@ -39,11 +41,12 @@ public class OrderHeader extends BaseEntity {
 
         OrderHeader that = (OrderHeader) o;
 
-        if (!Objects.equals(shippingAddress, that.shippingAddress))
+        if (shippingAddress != null ? !shippingAddress.equals(that.shippingAddress) : that.shippingAddress != null)
             return false;
-        if (!Objects.equals(billToAddress, that.billToAddress))
+        if (billToAddress != null ? !billToAddress.equals(that.billToAddress) : that.billToAddress != null)
             return false;
-        return Objects.equals(customer, that.customer);
+        if (customer != null ? !customer.equals(that.customer) : that.customer != null) return false;
+        return orderStatus == that.orderStatus;
     }
 
     @Override
@@ -52,6 +55,7 @@ public class OrderHeader extends BaseEntity {
         result = 31 * result + (shippingAddress != null ? shippingAddress.hashCode() : 0);
         result = 31 * result + (billToAddress != null ? billToAddress.hashCode() : 0);
         result = 31 * result + (customer != null ? customer.hashCode() : 0);
+        result = 31 * result + (orderStatus != null ? orderStatus.hashCode() : 0);
         return result;
     }
 }
