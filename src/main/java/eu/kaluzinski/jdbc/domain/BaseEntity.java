@@ -1,13 +1,15 @@
 package eu.kaluzinski.jdbc.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.util.Objects;
+import java.sql.Timestamp;
 
 
 @Getter
@@ -18,6 +20,9 @@ public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Timestamp createdDate;
 
     @Override
     public boolean equals(Object o) {
@@ -26,11 +31,14 @@ public abstract class BaseEntity {
 
         BaseEntity that = (BaseEntity) o;
 
-        return Objects.equals(id, that.id);
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        return createdDate != null ? createdDate.equals(that.createdDate) : that.createdDate == null;
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (createdDate != null ? createdDate.hashCode() : 0);
+        return result;
     }
 }
