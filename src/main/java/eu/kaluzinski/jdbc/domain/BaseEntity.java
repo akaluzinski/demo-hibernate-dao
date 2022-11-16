@@ -8,9 +8,10 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -24,6 +25,10 @@ public abstract class BaseEntity {
     @Column(updatable = false)
     private Timestamp createdDate;
 
+    @UpdateTimestamp
+    @Column(updatable = false)
+    private Timestamp updatedDate;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -31,14 +36,16 @@ public abstract class BaseEntity {
 
         BaseEntity that = (BaseEntity) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        return createdDate != null ? createdDate.equals(that.createdDate) : that.createdDate == null;
+        if (!Objects.equals(id, that.id)) return false;
+        if (!Objects.equals(createdDate, that.createdDate)) return false;
+        return Objects.equals(updatedDate, that.updatedDate);
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (createdDate != null ? createdDate.hashCode() : 0);
+        result = 31 * result + (updatedDate != null ? updatedDate.hashCode() : 0);
         return result;
     }
 }
