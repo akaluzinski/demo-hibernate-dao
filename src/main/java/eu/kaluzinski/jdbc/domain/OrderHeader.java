@@ -7,8 +7,12 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Objects;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -33,6 +37,9 @@ public class OrderHeader extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @OneToMany(mappedBy = "orderHeader")
+    private Set<OrderLine> orderLines;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -41,12 +48,13 @@ public class OrderHeader extends BaseEntity {
 
         OrderHeader that = (OrderHeader) o;
 
-        if (shippingAddress != null ? !shippingAddress.equals(that.shippingAddress) : that.shippingAddress != null)
+        if (!Objects.equals(shippingAddress, that.shippingAddress))
             return false;
-        if (billToAddress != null ? !billToAddress.equals(that.billToAddress) : that.billToAddress != null)
+        if (!Objects.equals(billToAddress, that.billToAddress))
             return false;
-        if (customer != null ? !customer.equals(that.customer) : that.customer != null) return false;
-        return orderStatus == that.orderStatus;
+        if (!Objects.equals(customer, that.customer)) return false;
+        if (orderStatus != that.orderStatus) return false;
+        return Objects.equals(orderLines, that.orderLines);
     }
 
     @Override
@@ -56,6 +64,7 @@ public class OrderHeader extends BaseEntity {
         result = 31 * result + (billToAddress != null ? billToAddress.hashCode() : 0);
         result = 31 * result + (customer != null ? customer.hashCode() : 0);
         result = 31 * result + (orderStatus != null ? orderStatus.hashCode() : 0);
+        result = 31 * result + (orderLines != null ? orderLines.hashCode() : 0);
         return result;
     }
 }
