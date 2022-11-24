@@ -33,7 +33,6 @@ public class OrderLine extends BaseEntity {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (quantityOrder != null ? quantityOrder.hashCode() : 0);
-        result = 31 * result + (orderHeader != null ? orderHeader.hashCode() : 0);
         return result;
     }
 }
