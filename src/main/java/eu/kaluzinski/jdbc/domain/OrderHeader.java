@@ -10,15 +10,13 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.OneToOne;
+import lombok.Data;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
-@Setter
-@Getter
+@Data
 @Entity
 @AttributeOverrides({
         @AttributeOverride(name = "shippingAddress.address", column = @Column(name = "shipping_address")),
@@ -44,6 +42,9 @@ public class OrderHeader extends BaseEntity {
     @OneToMany(mappedBy = "orderHeader", cascade = CascadeType.PERSIST)
     private Set<OrderLine> orderLines;
 
+    @OneToOne
+    private OrderApproval orderApproval;
+
     public void addOrderLine(OrderLine orderLine) {
         if (orderLines == null) {
             orderLines = new HashSet<>();
@@ -52,31 +53,4 @@ public class OrderHeader extends BaseEntity {
         orderLine.setOrderHeader(this);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        OrderHeader that = (OrderHeader) o;
-
-        if (!Objects.equals(shippingAddress, that.shippingAddress))
-            return false;
-        if (!Objects.equals(billToAddress, that.billToAddress))
-            return false;
-        if (!Objects.equals(customer, that.customer)) return false;
-        if (orderStatus != that.orderStatus) return false;
-        return Objects.equals(orderLines, that.orderLines);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (shippingAddress != null ? shippingAddress.hashCode() : 0);
-        result = 31 * result + (billToAddress != null ? billToAddress.hashCode() : 0);
-        result = 31 * result + (customer != null ? customer.hashCode() : 0);
-        result = 31 * result + (orderStatus != null ? orderStatus.hashCode() : 0);
-        result = 31 * result + (orderLines != null ? orderLines.hashCode() : 0);
-        return result;
-    }
 }

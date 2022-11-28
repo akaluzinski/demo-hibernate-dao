@@ -1,6 +1,7 @@
 package eu.kaluzinski.jdbc;
 
 import eu.kaluzinski.jdbc.domain.Customer;
+import eu.kaluzinski.jdbc.domain.OrderApproval;
 import eu.kaluzinski.jdbc.domain.OrderHeader;
 import eu.kaluzinski.jdbc.domain.OrderLine;
 import eu.kaluzinski.jdbc.domain.Product;
@@ -31,6 +32,9 @@ public class OrderHeaderRepositoryTest {
     @Autowired
     CustomerRepository customerRepository;
 
+    @Autowired
+    OrderApprovalRepository orderApprovalRepository;
+
     Product product;
 
     @BeforeEach
@@ -54,8 +58,13 @@ public class OrderHeaderRepositoryTest {
         OrderLine orderLine = new OrderLine();
         orderLine.setQuantityOrder(2);
         orderLine.setProduct(product);
-
         orderHeader.addOrderLine(orderLine);
+
+        OrderApproval orderApproval = new OrderApproval();
+        orderApproval.setApprovedBy("Me!");
+        OrderApproval savedOrderApproval = orderApprovalRepository.save(orderApproval);
+        orderHeader.setOrderApproval(savedOrderApproval);
+
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
         assertNotNull(savedOrder);
