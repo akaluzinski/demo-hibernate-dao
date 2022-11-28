@@ -10,7 +10,7 @@ create table customer
     email         varchar(30),
     created_date  timestamp,
     updated_date  timestamp
-)
+);
 
 alter table order_header
     add column customer_id bigint;
