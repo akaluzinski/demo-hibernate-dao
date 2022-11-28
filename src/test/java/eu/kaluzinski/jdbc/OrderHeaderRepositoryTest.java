@@ -1,5 +1,6 @@
 package eu.kaluzinski.jdbc;
 
+import eu.kaluzinski.jdbc.domain.Customer;
 import eu.kaluzinski.jdbc.domain.OrderHeader;
 import eu.kaluzinski.jdbc.domain.OrderLine;
 import eu.kaluzinski.jdbc.domain.Product;
@@ -27,6 +28,9 @@ public class OrderHeaderRepositoryTest {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    CustomerRepository customerRepository;
+
     Product product;
 
     @BeforeEach
@@ -41,7 +45,11 @@ public class OrderHeaderRepositoryTest {
     @Test
     void shouldSaveOrderWithLine() {
         OrderHeader orderHeader = new OrderHeader();
-        orderHeader.setCustomer("some customer");
+
+        Customer customer = new Customer();
+        customer.setCustomerName("Somename");
+        Customer savedCustomer = customerRepository.save(customer);
+        orderHeader.setCustomer(savedCustomer);
 
         OrderLine orderLine = new OrderLine();
         orderLine.setQuantityOrder(2);
@@ -59,7 +67,10 @@ public class OrderHeaderRepositoryTest {
     @Test
     void testSaveOrder() {
         OrderHeader orderHeader = new OrderHeader();
-        orderHeader.setCustomer("some customer");
+        Customer customer = new Customer();
+        customer.setCustomerName("Somename");
+        Customer savedCustomer = customerRepository.save(customer);
+        orderHeader.setCustomer(savedCustomer);
 
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
         assertNotNull(savedOrder);

@@ -8,6 +8,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,7 +36,8 @@ public class OrderHeader extends BaseEntity {
     private Address shippingAddress;
     @Embedded
     private Address billToAddress;
-    private String customer;
+    @ManyToOne
+    private Customer customer;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 

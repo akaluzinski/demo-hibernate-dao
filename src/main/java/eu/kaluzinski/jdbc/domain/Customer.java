@@ -1,14 +1,17 @@
 package eu.kaluzinski.jdbc.domain;
 
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.OneToMany;
+import lombok.Data;
 
-@Getter
-@Setter
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+@Data
 @Entity
 public class Customer extends BaseEntity {
 
@@ -17,12 +20,14 @@ public class Customer extends BaseEntity {
     private Long id;
 
     private String customerName;
-    private String address;
-    private String city;
-    private String state;
-    private String zipCode;
+
+    @Embedded
+    private Address address;
     private String phone;
     private String email;
-    
+
+    @OneToMany(mappedBy = "customer")
+    private Set<OrderHeader> orderHeaders = new LinkedHashSet<>();
+
 
 }
