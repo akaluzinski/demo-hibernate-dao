@@ -1,5 +1,6 @@
 package eu.kaluzinski.jdbc;
 
+import eu.kaluzinski.jdbc.domain.Address;
 import eu.kaluzinski.jdbc.domain.Customer;
 import eu.kaluzinski.jdbc.domain.OrderApproval;
 import eu.kaluzinski.jdbc.domain.OrderHeader;
@@ -15,8 +16,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("local")
 @DataJpaTest
@@ -44,6 +46,8 @@ public class OrderHeaderRepositoryTest {
         product1.setProductStatus(ProductStatus.NEW);
         product = productRepository.saveAndFlush(product1);
 
+        OrderHeader orderHeader = new OrderHeader();
+        orderHeaderRepository.saveAndFlush(orderHeader);
     }
 
     @Test
@@ -92,4 +96,22 @@ public class OrderHeaderRepositoryTest {
         assertNotNull(fetchedOrder.getUpdatedDate());
 
     }
+
+    @Test
+    void testUpdatingAddress() {
+        List<OrderHeader> orderHeaderList = orderHeaderRepository.findAll();
+        assertNotNull(orderHeaderList);
+        assertTrue(orderHeaderList.size() > 0);
+
+        OrderHeader orderHeader = orderHeaderList.stream().findAny().get();
+
+        Address billToAddress = new Address();
+        orderHeader.setBillToAddress(billToAddress);
+        orderHeaderRepository.saveAndFlush(orderHeader);
+
+        OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(orderHeader.getId());
+        assertNotNull(fetchedOrder);
+        assertEquals(fetchedOrder.getBillToAddress(), billToAddress);
+    }
+
 }
