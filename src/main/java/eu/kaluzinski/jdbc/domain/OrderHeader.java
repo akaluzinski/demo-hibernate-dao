@@ -12,6 +12,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Version;
 import lombok.Data;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -49,6 +50,9 @@ public class OrderHeader extends BaseEntity {
     @OneToOne
     @Fetch(FetchMode.SELECT)
     private OrderApproval orderApproval;
+
+    @Version
+    private Integer version;
 
     public void addOrderLine(OrderLine orderLine) {
         if (orderLines == null) {
