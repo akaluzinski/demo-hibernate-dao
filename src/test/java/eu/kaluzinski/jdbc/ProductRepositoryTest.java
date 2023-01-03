@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ActiveProfiles("local")
@@ -42,5 +43,18 @@ public class ProductRepositoryTest {
         assertNotNull(fetchedProduct.getCreatedDate());
         assertNotNull(fetchedProduct.getUpdatedDate());
 
+    }
+
+    @Test
+    void shouldAddAndUpdateProductQuantity() {
+        Product product = new Product();
+        product.setDescription("Some description");
+        product.setProductStatus(ProductStatus.IN_STOCK);
+
+        Product savedProduct = productRepository.saveAndFlush(product);
+        savedProduct.setQuantityOnHand(67);
+
+        Product savedProduct2 = productRepository.saveAndFlush(savedProduct);
+        assertEquals(savedProduct2.getQuantityOnHand(), 67);
     }
 }
