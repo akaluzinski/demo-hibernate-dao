@@ -22,9 +22,10 @@ public class Bootstrap implements CommandLineRunner {
     public void run(String... args) {
         Customer customer = new Customer();
         customer.setCustomerName("Joe Doe");
-        customerRepository.save(customer);
+        Customer savedCustomer = customerRepository.save(customer);
+
         OrderHeader orderHeader = new OrderHeader();
-        orderHeader.setCustomer(customer);
+        orderHeader.setCustomer(savedCustomer);
         orderHeader.setOrderStatus(OrderStatus.NEW);
         orderHeaderRepository.saveAndFlush(orderHeader);
     }

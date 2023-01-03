@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Version;
 import lombok.Data;
 
 import java.util.LinkedHashSet;
@@ -25,6 +26,9 @@ public class Customer extends BaseEntity {
     private Address address;
     private String phone;
     private String email;
+
+    @Version
+    private Integer version;
 
     @OneToMany(mappedBy = "customer")
     private Set<OrderHeader> orderHeaders = new LinkedHashSet<>();
