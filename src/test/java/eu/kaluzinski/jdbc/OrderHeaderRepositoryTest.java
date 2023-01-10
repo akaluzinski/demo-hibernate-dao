@@ -9,6 +9,7 @@ import eu.kaluzinski.jdbc.domain.Product;
 import eu.kaluzinski.jdbc.domain.ProductStatus;
 import eu.kaluzinski.jdbc.repositories.OrderHeaderRepository;
 import eu.kaluzinski.jdbc.repositories.ProductRepository;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +96,16 @@ public class OrderHeaderRepositoryTest {
         assertNotNull(fetchedOrder.getCreatedDate());
         assertNotNull(fetchedOrder.getUpdatedDate());
 
+    }
+
+    @Test
+    void shouldValidateMaxCustomerName() {
+        Customer customer = new Customer();
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            customer.setCustomerName("SomenameSomenameSomenameSomenameSomenameSomenameSomenameSomenameSomenameSomenameSomename");
+            customerRepository.save(customer);
+        });
     }
 
     @Test

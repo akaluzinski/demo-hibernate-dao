@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Version;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -20,6 +21,7 @@ public class Customer extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Length(max = 50)
     private String customerName;
 
     @Embedded
