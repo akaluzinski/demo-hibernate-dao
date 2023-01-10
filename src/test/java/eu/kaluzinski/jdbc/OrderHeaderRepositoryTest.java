@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class OrderHeaderRepositoryTest {
 
+    public static final String TOO_LONG_VALUE = "SomenameSomenameSomenameSomenameSomenameSomenameSomenameSomenameSomenameSomenameSomename";
     @Autowired
     OrderHeaderRepository orderHeaderRepository;
 
@@ -103,7 +104,29 @@ public class OrderHeaderRepositoryTest {
         Customer customer = new Customer();
 
         assertThrows(ConstraintViolationException.class, () -> {
-            customer.setCustomerName("SomenameSomenameSomenameSomenameSomenameSomenameSomenameSomenameSomenameSomenameSomename");
+            customer.setCustomerName(TOO_LONG_VALUE);
+            customerRepository.save(customer);
+        });
+    }
+
+    @Test
+    void shouldValidateCustomerPhoneNumber() {
+        Customer customer = new Customer();
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            customer.setPhone(TOO_LONG_VALUE);
+            customerRepository.save(customer);
+        });
+    }
+
+    @Test
+    void shouldValidateCustomerAddress() {
+        Customer customer = new Customer();
+        Address address = new Address();
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            address.setCity(TOO_LONG_VALUE);
+            customer.setAddress(address);
             customerRepository.save(customer);
         });
     }
