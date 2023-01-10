@@ -120,6 +120,26 @@ public class OrderHeaderRepositoryTest {
     }
 
     @Test
+    void shouldValidateCustomerEmailFormat() {
+        Customer customer = new Customer();
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            customer.setEmail("xD@");
+            customerRepository.save(customer);
+        });
+    }
+
+    @Test
+    void shouldValidateCustomerEmailFormatSize() {
+        Customer customer = new Customer();
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            customer.setEmail(TOO_LONG_VALUE);
+            customerRepository.save(customer);
+        });
+    }
+
+    @Test
     void shouldValidateCustomerAddress() {
         Customer customer = new Customer();
         Address address = new Address();

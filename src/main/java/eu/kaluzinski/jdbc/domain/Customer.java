@@ -8,9 +8,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Version;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -23,17 +24,18 @@ public class Customer extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Length(max = 50)
+    @Size(max = 50)
     private String customerName;
 
     @Valid
     @Embedded
     private Address address;
 
-    @Length(max = 20)
+    @Size(max = 20)
     private String phone;
 
-    @Length(max = 30)
+    @Email
+    @Size(max = 30)
     private String email;
 
     @Version

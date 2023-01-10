@@ -1,9 +1,9 @@
 package eu.kaluzinski.jdbc.domain;
 
 import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 
 import java.util.Objects;
 
@@ -11,14 +11,14 @@ import java.util.Objects;
 @Setter
 @Embeddable
 public class Address {
-    @Length(max = 30)
+    @Size(max = 30)
     private String address;
-    @Length(max = 20)
+    @Size(max = 20)
     private String city;
-    @Length(max = 20)
+    @Size(max = 20)
     private String state;
 
-    @Length(max = 20)
+    @Size(max = 20)
     private String zipCode;
 
     @Override
